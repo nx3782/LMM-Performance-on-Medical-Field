@@ -67,7 +67,7 @@ The dataset exhibits significant class imbalance, with tuberculosis severely und
 <tr><td width="30%"><image src="samples-gif/sample_covid_2.png" /></td><td width="15%"><b>Covid 19 Case</b></td><td>This is another example case that shows the patient presents Covid 19 disease in CT Scan<br /></td></tr>
 <tr><td width="30%"><image src="samples-gif/sample_healthy_1.png" /></td><td width="15%"><b>Normal Case</b></td><td>This is one example case that shows the patient does not present any Covid 19 disease in CT Scan or you can interpret as a healthy/normal lung.<br /></td></tr>
 <tr><td width="30%"><image src="samples-gif/sample_healthy_2.png" /></td><td width="15%"><b>Normal Case</b></td><td>This is another example case that shows the patient does not present any Covid 19 disease in CT Scan or you can interpret as a healthy/normal lung.<br /></td></tr>
-<tr><td width="30%"><image src="samples-gif/sample_tuber_1.png" /></td><td width="15%"><b>Tuberculosis 19 Case</b></td><td>This is one example case that shows the patient presents Tuberculosis symptom in X-ray format.<br /></td></tr>
+<tr><td width="30%"><image src="samples-gif/sample_tuber_1.png" /></td><td width="15%"><b>Tuberculosis 19 Case</b></td><td>This is one example case that shows the patient presents Tuberculosis symptom in X-ray format.<br /></td></tr></table>
 
 You can expect the Large Multimodal Models to take in both **CT Scan** and **X-ray** format images for diagnosis with clear note on the type of input images. 
 
