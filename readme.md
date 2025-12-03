@@ -63,13 +63,11 @@ The dataset exhibits significant class imbalance, with tuberculosis severely und
 <b></b>Examples in these datasets:
 
 <table id="tfhover" class="tftable" border="1">
-<tr><td width="30%"><image src="samples-gif/sample_covid_1.png" /></td><td width="15%"><b>Covid 19 Case</b></td><td>This is one example case that shows the patient has Covid 19 disease.<br /></td></tr>
-<tr><td><image src="samples-gif/disgust_07734.gif" /></td><td><b>Disgust</b></td><td>English: A woman looks nervously at her feet. The frown,the closed eyes and  the  open mouth.<br />中文：一个女人紧张的看着脚下的东西。皱眉，眼睛微闭，嘴巴张开。</td></tr>
-<tr><td><image src="samples-gif/fear_09246.gif" /></td><td><b>Fear</b></td><td>English: A girl gasps in the dark. The wide eyes and the open mouth.<br />中文：一个女孩在昏暗的环境中急促的喘息。瞪眼，嘴巴张大。</td></tr>
-<tr><td><image src="samples-gif/happy_01440.gif" /></td><td><b>Happiness</b></td><td>English: A woman communicates with a man, talking about dinner. The slightly closed eyes, the open mouth and the raised lip corners.<br />中文：一个女人与男人交流，谈论着晚餐。眼睛微闭，嘴巴张开，嘴角上扬。</td></tr>
-<tr><td><image src="samples-gif/sad_00467.gif" /></td><td><b>Sadness</b></td><td>English: A girl stands on the beach, tilting her head back and crying. The deep frown and the wide open mouth.<br />中文：一个女孩站在海边，仰着头哭泣。眉头紧蹙，嘴巴张大。</td></tr></table>
+<tr><td width="30%"><image src="samples-gif/sample_covid_1.png" /></td><td width="15%"><b>Covid 19 Case</b></td><td>This is one example case that shows the patient present Covid 19 disease in CT Scan<br /></td></tr>
+<tr><td width="30%"><image src="samples-gif/sample_covid_2.png" /></td><td width="15%"><b>Covid 19 Case</b></td><td>This is another example case that shows the patient presents Covid 19 disease in CT Scan<br /></td></tr>
+<tr><td width="30%"><image src="samples-gif/sample_healthy_1.png" /></td><td width="15%"><b>Normal Case</b></td><td>This is one example case that shows the patient does not present any Covid 19 disease in CT Scan or you can interpret as a healthy/normal lung.<br /></td></tr>
+<tr><td width="30%"><image src="samples-gif/sample_healthy_2.png" /></td><td width="15%"><b>Normal Case</b></td><td>This is another example case that shows the patient does not present any Covid 19 disease in CT Scan or you can interpret as a healthy/normal lung.<br /></td></tr>
+<tr><td width="30%"><image src="samples-gif/sample_tuber_1.png" /></td><td width="15%"><b>Tuberculosis 19 Case</b></td><td>This is one example case that shows the patient presents Tuberculosis symptom in X-ray format.<br /></td></tr>
 
-<b></b>Categories expect to see within these datasets:
-
-<tr><td width="30%"><image src="samples-gif/example_category.png" /></td><td width="15%"></td></tr>
+You can expect the Large Multimodal Models to take in both **CT Scan** and **X-ray** format images for diagnosis with clear note on the type of input images. 
 
