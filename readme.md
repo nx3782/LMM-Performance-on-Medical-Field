@@ -169,59 +169,23 @@ Figure 2: Comparison of SigLIP Confusion Matrices Before and After Fine-Tuning
 (a) Baseline (non-fine-tuned) SigLIP: Classifies 100% of images as normal (accuracy: 45.75%, UAR: 33.33%).
 (b) Fine-tuned SigLIP: Shows strong discrimination between COVID-19 (92.1% recall) and normal (95.7% recall) cases, but still misclassifies 95.2% of tuberculosis cases as normal (accuracy: 91.54%, UAR: 62.61%).
 
-4.4 Commentary on Observed Accuracy and Ideas for Improvement
-Key Observations:
-
+**4.4 Commentary on Observed Accuracy and Ideas for Improvement**
+**Key Observations**:
 Dramatic Improvement from Fine-Tuning: The fine-tuned SigLIP model (62.61% UAR) nearly doubled the performance of both zero-shot baselines (~33% UAR). This confirms the hypothesis that domain-specific fine-tuning is essential for medical image classification, even when using powerful foundation models.
+
 Strong Performance on Majority Classes: The fine-tuned model achieved excellent results for COVID-19 (92.12% recall) and normal (95.71% recall) cases. This indicates that the model successfully learned discriminative features for these well-represented classes.
+
 Complete Failure on Tuberculosis: The model failed to correctly classify any tuberculosis cases (0% recall), instead misclassifying 95.2% as normal. This is the most significant limitation of the current solution.
-Zero-Shot Limitations: Both Qwen2.5-VL-3B and baseline SigLIP showed strong bias toward predicting "normal," suggesting that without task-specific training, these models default to the most generic interpretation of medical images.
 
-Root Cause Analysis for Tuberculosis Failure:
-The tuberculosis detection failure stems from severe class imbalance:
+Zero-Shot Limitations: Both baseline Qwen2.5-VL-3B and baseline SigLIP showed strong bias toward predicting "normal," suggesting that without task-specific training, these models default to the most generic interpretation of medical images.
 
-Tuberculosis: 393 samples (2.4% of dataset)
-COVID-19: 8,449 samples (51.8% of dataset)
-Normal: 7,458 samples (45.7% of dataset)
+Analysis for Tuberculosis Failure: The tuberculosis detection failure stems from severe class imbalance: Tuberculosis: 393 samples (2.4% of dataset); COVID-19: 8,449 samples (51.8% of dataset); Normal: 7,458 samples (45.7% of dataset). The totalnumber of tuberculosis samples was insufficient for the model to learn its distinctive features (upper lobe infiltrates, cavitary lesions, tree-in-bud patterns). Additionally, tuberculosis images are chest X-rays while COVID-19/normal images are CT scans, creating a domain shift that the model may have exploited—learning to classify X-ray-like images as "not COVID-19" rather than learning tuberculosis-specific patterns.
 
-Despite implementing weighted sampling, the absolute number of tuberculosis samples was insufficient for the model to learn its distinctive features (upper lobe infiltrates, cavitary lesions, tree-in-bud patterns). Additionally, tuberculosis images are chest X-rays while COVID-19/normal images are CT scans, creating a domain shift that the model may have exploited—learning to classify X-ray-like images as "not COVID-19" rather than learning tuberculosis-specific patterns.
-Ideas for Improvement:
-
-Address Class Imbalance More Aggressively:
-
-Acquire additional tuberculosis data from other public repositories
-Apply synthetic data augmentation (rotation, scaling, elastic deformation)
-Use oversampling techniques like SMOTE adapted for image data
-Implement focal loss to emphasize hard-to-classify minority samples
-
-
-Domain Adaptation for Modality Differences:
-
-Separate the classification into modality-specific branches (CT vs. X-ray)
-Apply domain adaptation techniques to bridge the CT/X-ray gap
-Train separate specialized classifiers for each imaging modality
-
-
-Few-Shot Learning for Rare Classes:
-
-Implement prototypical networks or matching networks designed for few-shot scenarios
-Use meta-learning approaches that can generalize from limited examples
-
-
-Ensemble Methods:
-
-Combine predictions from multiple models trained with different random seeds
-Use model ensembles with specialized tuberculosis detectors
-
-
-Fine-Tune Larger Models (with more resources):
-
-Fine-tune Qwen2.5-VL-3B or similar large multimodal models
-Explore Video-LLaMA3 or LLaVA-One-Vision architectures
+Potential Improvements: I should definitely acquire additional tuberculosis data from other public repositories (also in CT Scans if possible but unlikely). Maybe try synthetic data augmentation (for example, rotation, scaling, elastic deformation); however, that might not provide us with guaranteed performance improvements because spatial information matters a lot in medical related tasks and we should eliminate as much bias as possible in vision part so that models do not get confused. We can also try to generate annotations using state-of-the-art medical LMMs and then use add these annotations to the prompt part for fine-tuning. I was planning to do this; however, I do not have enough GPU resources to run large medical models. This would be similar to fine-Tune larger models if I have more GPU resources). Additionally, we should definitely try fine-tuning Qwen2.5-VL-3B as I believe that can do much better than fine-tuned SigLIP because it is a more complicated model. 
 
 
 
-Training vs. Validation Gap:
-The high WAR (91.54%) combined with moderate UAR (62.61%) indicates that the model performs well on majority classes but fails on the minority class. This is not classical overfitting (where training accuracy exceeds validation accuracy), but rather a systematic failure to learn underrepresented patterns. The solution requires addressing data imbalance rather than regularization.
+Training vs. Validation Gap: Since I am doing zero-shot vs sft inference performance check, I will explain this part from the results I got. The high WAR (91.54%) combined with moderate UAR (62.61%) indicates that the model performs well on majority classes but fails on the minority class. This is not classical overfitting (where training accuracy exceeds validation accuracy), but rather a systematic failure to learn underrepresented patterns. The solution requires addressing data imbalance rather than regularization.
+
 Implemented Improvement:
-For the final submission, I focused on optimizing the fine-tuning hyperparameters and ensuring robust data augmentation for the tuberculosis class. While this did not fully resolve the tuberculosis detection issue, it represents a practical improvement within the available computational budget.
+For the final report, I will focus on tuning the hyperparameters and making sure robust tuberculosis cases are passed in to the model correctly. While this may not improve the tuberculosis detection performance, still I want to make sure I did everything correctly. 
