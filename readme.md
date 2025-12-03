@@ -157,3 +157,72 @@ Fine-Tuning Strategy:
 I evaluated model performance using Unweighted Average Recall (UAR) and Weighted Average Recall (WAR) to account for class imbalances. UAR treats all classes equally regardless of sample size, while WAR weights by class frequency.
 
 <img src="samples-gif/model_performance_sum_1.png" width="600"/>
+
+
+**4.3 Figures**
+Figure 1: Confusion Matrix for Zero-Shot Qwen2.5-VL-3B
+<img src="samples-gif/qwen_2_5_cm.png" width="500"/>
+The confusion matrix shows Qwen2.5-VL-3B's strong bias toward classifying images as normal (middle column). 91.4% of COVID-19 cases and 93.3% of tuberculosis cases were incorrectly labeled as normal. Overall accuracy is 44.5% with UAR of 33.9%.
+
+Figure 2: Comparison of SigLIP Confusion Matrices Before and After Fine-Tuning
+<img src="samples-gif/base_siglip_cm.png" width="700"/>
+(a) Baseline (non-fine-tuned) SigLIP: Classifies 100% of images as normal (accuracy: 45.75%, UAR: 33.33%).
+(b) Fine-tuned SigLIP: Shows strong discrimination between COVID-19 (92.1% recall) and normal (95.7% recall) cases, but still misclassifies 95.2% of tuberculosis cases as normal (accuracy: 91.54%, UAR: 62.61%).
+<img src="samples-gif/sft_siglip_cm.png" width="700"/>
+
+4.4 Commentary on Observed Accuracy and Ideas for Improvement
+Key Observations:
+
+Dramatic Improvement from Fine-Tuning: The fine-tuned SigLIP model (62.61% UAR) nearly doubled the performance of both zero-shot baselines (~33% UAR). This confirms the hypothesis that domain-specific fine-tuning is essential for medical image classification, even when using powerful foundation models.
+Strong Performance on Majority Classes: The fine-tuned model achieved excellent results for COVID-19 (92.12% recall) and normal (95.71% recall) cases. This indicates that the model successfully learned discriminative features for these well-represented classes.
+Complete Failure on Tuberculosis: The model failed to correctly classify any tuberculosis cases (0% recall), instead misclassifying 95.2% as normal. This is the most significant limitation of the current solution.
+Zero-Shot Limitations: Both Qwen2.5-VL-3B and baseline SigLIP showed strong bias toward predicting "normal," suggesting that without task-specific training, these models default to the most generic interpretation of medical images.
+
+Root Cause Analysis for Tuberculosis Failure:
+The tuberculosis detection failure stems from severe class imbalance:
+
+Tuberculosis: 393 samples (2.4% of dataset)
+COVID-19: 8,449 samples (51.8% of dataset)
+Normal: 7,458 samples (45.7% of dataset)
+
+Despite implementing weighted sampling, the absolute number of tuberculosis samples was insufficient for the model to learn its distinctive features (upper lobe infiltrates, cavitary lesions, tree-in-bud patterns). Additionally, tuberculosis images are chest X-rays while COVID-19/normal images are CT scans, creating a domain shift that the model may have exploited—learning to classify X-ray-like images as "not COVID-19" rather than learning tuberculosis-specific patterns.
+Ideas for Improvement:
+
+Address Class Imbalance More Aggressively:
+
+Acquire additional tuberculosis data from other public repositories
+Apply synthetic data augmentation (rotation, scaling, elastic deformation)
+Use oversampling techniques like SMOTE adapted for image data
+Implement focal loss to emphasize hard-to-classify minority samples
+
+
+Domain Adaptation for Modality Differences:
+
+Separate the classification into modality-specific branches (CT vs. X-ray)
+Apply domain adaptation techniques to bridge the CT/X-ray gap
+Train separate specialized classifiers for each imaging modality
+
+
+Few-Shot Learning for Rare Classes:
+
+Implement prototypical networks or matching networks designed for few-shot scenarios
+Use meta-learning approaches that can generalize from limited examples
+
+
+Ensemble Methods:
+
+Combine predictions from multiple models trained with different random seeds
+Use model ensembles with specialized tuberculosis detectors
+
+
+Fine-Tune Larger Models (with more resources):
+
+Fine-tune Qwen2.5-VL-3B or similar large multimodal models
+Explore Video-LLaMA3 or LLaVA-One-Vision architectures
+
+
+
+Training vs. Validation Gap:
+The high WAR (91.54%) combined with moderate UAR (62.61%) indicates that the model performs well on majority classes but fails on the minority class. This is not classical overfitting (where training accuracy exceeds validation accuracy), but rather a systematic failure to learn underrepresented patterns. The solution requires addressing data imbalance rather than regularization.
+Implemented Improvement:
+For the final submission, I focused on optimizing the fine-tuning hyperparameters and ensuring robust data augmentation for the tuberculosis class. While this did not fully resolve the tuberculosis detection issue, it represents a practical improvement within the available computational budget.
