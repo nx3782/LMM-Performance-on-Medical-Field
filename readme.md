@@ -72,7 +72,7 @@ The dataset exhibits significant class imbalance, with tuberculosis severely und
 You can expect the Large Multimodal Models to take in both **CT Scan** and **X-ray** format images for diagnosis with clear note on the type of input images. 
 
 
-**Part 3: First Update**
+##Part 3: First Update
 **3.1 Methods Applied for Data Preprocessing and Feature Extraction**
 
 **Data Preprocessing**:
