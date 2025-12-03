@@ -122,3 +122,38 @@ You can run the following instructions step by step to set up first.
 You can expect outputs similar to the following: Input: covid_1.png; Predicted Class: covid19
 
 
+**Part 4: Final Solution**
+**4.1 Justification of Classifier Choice**: 
+After completing preprocessing and feature extraction, I evaluated three classification approaches: zero-shot inference with Qwen2.5-VL-3B, baseline SigLIP, and fine-tuned SigLIP. The final classifier is the fine-tuned SigLIP model, selected for the following reasons:Why SigLIP for Classification?
+Architecture Design for Image Classification: SigLIP is specifically designed to handle image-text contrastive learning tasks. By replacing the text encoder with a classification head, we obtain a powerful image classifier that leverages the pre-trained Vision Transformer's ability to extract discriminative features.
+
+**Vision Transformer Backbone**: SigLIP employs a ViT backbone that processes image patches through self-attention mechanisms. This architecture excels at capturing: 
+Local features (subtle opacities, lesion boundaries)
+Global context (overall lung structure, bilateral patterns)
+Long-range dependencies between distant image regions
+
+
+
+**Transfer Learning Efficiency**: Pre-trained on large-scale image-text pairs, SigLIP has learned robust visual representations. Fine-tuning adapts these representations to the medical imaging domain while preserving general visual understanding capabilities.
+
+**Computational Practicality**: With approximately 86 million parameters, SigLIP is substantially smaller than Qwen2.5-VL-3B (3 billion parameters). This enabled efficient fine-tuning on a single A-100 40GB GPU within reasonable time and memory constraints.
+Why Not Qwen2.5-VL-3B? 
+While Qwen2.5-VL-3B is a powerful multimodal model, several factors made it less suitable as the primary classifier:
+- Zero-shot performance was limited (33.9% UAR), indicating insufficient domain-specific knowledge
+- Fine-tuning a 3B parameter model would require substantially more computational resources
+- The model showed strong bias toward predicting "normal" for most inputs
+
+Why Not Traditional CNN Architectures?
+- My original plan included comparing multiple CNN architectures (ResNet, EfficientNet). However, package dependency conflicts in Google Colab and GPU resource limitations necessitated focusing on transformer-based approaches. SigLIP's ViT backbone ultimately provided strong performance without requiring CNN-specific implementations.
+
+Fine-Tuning Strategy:
+- Optimizer: AdamW with learning rate 2e-5 and weight decay 0.01
+- Learning Rate Schedule: Cosine scheduler with 500 warmup steps
+- Batch Size: 32
+- Epochs: 10
+- Loss Function: Cross-entropy loss
+
+**4.2 Classification Accuracy**
+I evaluated model performance using Unweighted Average Recall (UAR) and Weighted Average Recall (WAR) to account for class imbalances. UAR treats all classes equally regardless of sample size, while WAR weights by class frequency.
+
+<img src="samples-gif/model_performance_sum_1.png" width="600"/>
