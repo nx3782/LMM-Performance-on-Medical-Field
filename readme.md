@@ -186,3 +186,7 @@ Figure 2: Comparison of SigLIP Confusion Matrices Before and After Fine-Tuning
 **Training vs. Validation Gap**: Since I am doing zero-shot vs sft inference performance check, I will explain this part from the results I got. The high WAR (91.54%) combined with moderate UAR (62.61%) indicates that the model performs well on majority classes but fails on the minority class. This is not classical overfitting (where training accuracy exceeds validation accuracy), but rather a systematic failure to learn underrepresented patterns. The solution requires addressing data imbalance rather than regularization.
 
 **Implementation Improvement**:For the final report, I will focus on tuning the hyperparameters and making sure robust tuberculosis cases are passed in to the model correctly. While this may not improve the tuberculosis detection performance, still I want to make sure I did everything correctly. 
+
+**Code Instructions**
+Here is the google colab link: https://drive.google.com/file/d/18YIOZ8H-Bm3UOGwvdvdkFrTKIiQaqmBk/view?usp=sharing
+You can open "cv_final.ipynb" notebook and follow the steps to see the results. 
