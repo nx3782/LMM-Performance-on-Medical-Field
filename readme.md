@@ -71,3 +71,54 @@ The dataset exhibits significant class imbalance, with tuberculosis severely und
 
 You can expect the Large Multimodal Models to take in both **CT Scan** and **X-ray** format images for diagnosis with clear note on the type of input images. 
 
+
+**Part 3: First Update**
+**3.1 Methods Applied for Data Preprocessing and Feature Extraction**
+
+**Data Preprocessing**:
+- For the MosMedData collection, I extracted the center slice along the axial plane from each 3D volumetric CT scan (NIfTI format). The center slice was selected because it typically contains the most comprehensive view of the lungs, capturing bilateral lung fields and central pathology.
+- Intensity Normalization: Applied min-max normalization to ensure consistent contrast and brightness across all images, mapping pixel values to the standard 8-bit range (0-255). This standardization is essential when combining images from different scanners and acquisition protocols.
+- Color Space Conversion: Converted all grayscale medical images to RGB format (3-channel) for compatibility with pre-trained vision models, which expect RGB input.
+- Spatial Standardization: Resized all images to 224×224 pixels to meet the input requirements of both Qwen2.5-VL-3B and SigLIP models.
+- Dataset Fusion: Combined images from all three source datasets (COVID CT Slices, MosMedData, TB X-rays) while maintaining their original class labels (COVID-19, tuberculosis, or normal).
+
+**Feature Extraction Methods**:
+- Qwen2.5-VL-3B Zero-Shot Inference: Used this 3-billion parameter multimodal vision-language model to establish a zero-shot baseline. The model integrates advanced vision encoding with large language model capabilities, allowing it to interpret medical images using structured text prompts without task-specific training.
+- SigLIP Vision Transformer: Employed SigLIP (Sigmoid Loss for Image-Text Pairs) architecture with a Vision Transformer (ViT) backbone for feature extraction. The ViT processes images by: (1). Dividing the 224×224 input image into fixed-size patches (16×16 pixels). (2). Linearly embedding each patch into a vector representation. (3). Processing patch embeddings through multiple self-attention layers. (4). Generating a final image embedding that captures both local details and global context
+
+
+- Classification Head: Replaced SigLIP's original text encoder with a classification layer that maps the extracted image embeddings to three output classes (COVID-19, tuberculosis, normal).
+
+
+**3.2 Justification for Algorithm Choices**
+- Why Min-Max Normalization? Medical imaging data from different sources exhibits varying intensity distributions due to differences in scanner hardware, acquisition parameters, and reconstruction algorithms. Min-max normalization maps all pixel values to a consistent [0, 255] range, ensuring that the model receives standardized input regardless of the original intensity distribution. This prevents the model from learning source-specific intensity patterns rather than diagnostically relevant features.
+- Why Center Slice Extraction from 3D Volumes? For the MosMedData 3D CT scans, processing entire volumes would be computationally prohibitive and would require 3D architectures. Center slice extraction offers a practical compromise: the middle axial slice typically captures both lungs in their fullest extent; it often contains the most representative view of diffuse pathologies like COVID-19 ground-glass opacities; and it enables use of efficient 2D vision models pre-trained on natural images
+- Why RGB Conversion? Although medical images are inherently grayscale, state-of-the-art vision models (including SigLIP and Qwen2.5-VL) are pre-trained on RGB natural images. Converting grayscale to RGB (by replicating the single channel three times) allows these models to apply their learned feature representations to medical images without architectural modifications.
+- Why SigLIP Architecture? SigLIP was selected because it uses sigmoid loss instead of softmax-based contrastive loss, enabling more efficient batch processing and better scaling properties. Also its has strong Vision Transformer Backbone: The ViT architecture processes images through self-attention mechanisms, allowing the model to capture: (1). Fine-grained details (subtle opacities, lesion boundaries, cavitary margins). (2). Global context (overall lung structure, bilateral patterns, anatomical relationships). (3). Long-range dependencies between distant image regions.
+It also has transfer learning potential - pre-trained on large-scale image-text pairs, SigLIP has learned robust visual representations that can be adapted to medical imaging through fine-tuning.
+Computational Efficiency: The SigLIP-Base model (86M parameters) is substantially smaller than Qwen2.5-VL-3B (3B parameters), enabling faster training and inference on limited GPU resources (single A-100 40GB).
+
+- Why Qwen2.5-VL-3B for Zero-Shot Baseline? Qwen2.5-VL-3B represents a state-of-the-art multimodal model with strong general visual understanding. Evaluating its zero-shot performance serves two purposes: (1). establishes how well foundation models can perform on specialized medical tasks without domain adaptation, and (2). it provides a meaningful baseline to quantify the value added by task-specific fine-tuning
+
+
+**3.3 Illustrations of Preprocessing Results**
+Below are examples demonstrating how the preprocessing pipeline transforms raw medical images into standardized model inputs.
+-  For the covid 19 example 1, we can expect the following annotation: "This is a COVID-19 positive case showing bilateral ground-glass opacities. Image standardized to 224×224 pixels with normalized intensity."
+-  For the non-covid 19/healthy lung example 1, we can expect the following annotation: "This is a normal lung CT showing fully aerated lungs with no visible opacities or abnormalities."
+-  For the tuberculosis example 1, we can expect the following annotation: "This is a tuberculosis case showing characteristic upper lobe infiltrates visible on frontal chest X-ray."
+
+**3.4 Instructions for Running the Code**
+You can run the following instructions step by step to set up first. 
+1. Clone the Repo:
+- git clone https://github.com/nx3782/LMM-Performance-on-Medical-Field.git
+  cd LMM-Performance-on-Medical-Field
+
+2. Run zero-shot inference with Qwen2.5-VL-3B:
+- python baseline_qwen.py --image_path ./samples-gif/covid_1.png
+
+3. Run inference with SigLIP (baseline or fine-tuned):
+- python inference.py --image_path ./samples-gif/covid_1.png --model_type baseline
+  python inference.py --image_path ./samples-gif/covid_1.png --model_type finetuned
+You can expect outputs similar to the following: Input: covid_1.png; Predicted Class: covid19
+
+
