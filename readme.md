@@ -165,10 +165,9 @@ Figure 1: Confusion Matrix for Zero-Shot Qwen2.5-VL-3B
 The confusion matrix shows Qwen2.5-VL-3B's strong bias toward classifying images as normal (middle column). 91.4% of COVID-19 cases and 93.3% of tuberculosis cases were incorrectly labeled as normal. Overall accuracy is 44.5% with UAR of 33.9%.
 
 Figure 2: Comparison of SigLIP Confusion Matrices Before and After Fine-Tuning
-<img src="samples-gif/base_siglip_cm.png" width="400"/>
+<img src="samples-gif/siglip_comparison.png" width="400"/>
 (a) Baseline (non-fine-tuned) SigLIP: Classifies 100% of images as normal (accuracy: 45.75%, UAR: 33.33%).
 (b) Fine-tuned SigLIP: Shows strong discrimination between COVID-19 (92.1% recall) and normal (95.7% recall) cases, but still misclassifies 95.2% of tuberculosis cases as normal (accuracy: 91.54%, UAR: 62.61%).
-<img src="samples-gif/sft_siglip_cm.png" width="400"/>
 
 4.4 Commentary on Observed Accuracy and Ideas for Improvement
 Key Observations:
