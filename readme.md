@@ -159,16 +159,6 @@ I evaluated model performance using Unweighted Average Recall (UAR) and Weighted
 <img src="samples-gif/model_performance_sum_1.png" width="500"/>
 
 
-**4.3 Figures**
-Figure 1: Confusion Matrix for Zero-Shot Qwen2.5-VL-3B
-<img src="samples-gif/qwen_2_5_cm.png" width="400"/>
-The confusion matrix shows Qwen2.5-VL-3B's strong bias toward classifying images as normal (middle column). 91.4% of COVID-19 cases and 93.3% of tuberculosis cases were incorrectly labeled as normal. Overall accuracy is 44.5% with UAR of 33.9%.
-
-Figure 2: Comparison of SigLIP Confusion Matrices Before and After Fine-Tuning
-<img src="samples-gif/siglip_comparison.png" width="600"/>
-(a) Baseline (non-fine-tuned) SigLIP: Classifies 100% of images as normal (accuracy: 45.75%, UAR: 33.33%).
-(b) Fine-tuned SigLIP: Shows strong discrimination between COVID-19 (92.1% recall) and normal (95.7% recall) cases, but still misclassifies 95.2% of tuberculosis cases as normal (accuracy: 91.54%, UAR: 62.61%).
-
 **4.4 Commentary on Observed Accuracy and Ideas for Improvement**
 **Key Observations**:
 **Dramatic Improvement from Fine-Tuning**: The fine-tuned SigLIP model (62.61% UAR) nearly doubled the performance of both zero-shot baselines (~33% UAR). This confirms the hypothesis that domain-specific fine-tuning is essential for medical image classification, even when using powerful foundation models.
@@ -204,7 +194,16 @@ The fine-tuned SigLIP model achieved an Unweighted Average Recall (UAR) of 62.61
 The per-class recall breakdown reveals significant performance variation across categories. For COVID-19 detection, the model achieved 92.12% recall, correctly identifying 7,783 out of 8,449 COVID-19 cases. Normal lung classification performed even better with 95.71% recall, correctly classifying 7,138 out of 7,458 normal images. However, tuberculosis detection failed entirely with 0% recall, meaning none of the 393 tuberculosis cases were correctly identified.
 Precision scores followed a similar pattern: COVID-19 achieved 95.90% precision, normal cases reached 87.28% precision, while tuberculosis precision was undefined due to zero correct predictions. The corresponding F1 scores were 0.9397 for COVID-19, 0.9130 for normal cases, and 0.0000 for tuberculosis.
 For comparison, the zero-shot Qwen2.5-VL-3B baseline achieved only 33.9% UAR on the same test set, with recall scores of 3.46% for COVID-19, 93.06% for normal, and 5.18% for tuberculosis. The baseline SigLIP model without fine-tuning performed even worse at 33.33% UAR, classifying 100% of all images as normal regardless of their true label. These comparisons demonstrate that task-specific fine-tuning substantially improved discriminative capability, nearly doubling the UAR from baseline levels.
+
+**Figures**
+Figure 1: Confusion Matrix for Zero-Shot Qwen2.5-VL-3B
+<img src="samples-gif/qwen_2_5_cm.png" width="400"/>
+The confusion matrix shows Qwen2.5-VL-3B's strong bias toward classifying images as normal (middle column). 91.4% of COVID-19 cases and 93.3% of tuberculosis cases were incorrectly labeled as normal. Overall accuracy is 44.5% with UAR of 33.9%.
+
+Figure 2: Comparison of SigLIP Confusion Matrices Before and After Fine-Tuning
 <img src="samples-gif/siglip_comparison.png" width="600"/>
+(a) Baseline (non-fine-tuned) SigLIP: Classifies 100% of images as normal (accuracy: 45.75%, UAR: 33.33%).
+(b) Fine-tuned SigLIP: Shows strong discrimination between COVID-19 (92.1% recall) and normal (95.7% recall) cases, but still misclassifies 95.2% of tuberculosis cases as normal (accuracy: 91.54%, UAR: 62.61%).
 
 **5.3 Error Analysis and Proposed Improvements**
 The test set results confirm patterns observed during validation, though they also reveal critical limitations in the current approach. The model performs exceptionally well on the two majority classes but completely fails on the minority tuberculosis class. This section analyzes the root causes of these failures and proposes concrete improvements.
