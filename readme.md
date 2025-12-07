@@ -159,7 +159,7 @@ I evaluated model performance using Unweighted Average Recall (UAR) and Weighted
 <img src="samples-gif/model_performance_sum_1.png" width="500"/>
 
 
-**4.4 Commentary on Observed Accuracy and Ideas for Improvement**
+**4.3 Commentary on Observed Accuracy and Ideas for Improvement**
 **Key Observations**:
 **Dramatic Improvement from Fine-Tuning**: The fine-tuned SigLIP model (62.61% UAR) nearly doubled the performance of both zero-shot baselines (~33% UAR). This confirms the hypothesis that domain-specific fine-tuning is essential for medical image classification, even when using powerful foundation models.
 
