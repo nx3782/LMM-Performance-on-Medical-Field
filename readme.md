@@ -230,5 +230,8 @@ Lastly, instead of using Vision Encoders purely, we can switch to state-of-the-a
 **5.4 Conclusion**
 It was amazing to see that: the final evaluation on held-out test data demonstrates that fine-tuning the SigLIP architecture substantially improves medical image classification performance compared to zero-shot approaches, achieving 62.61% UAR versus 33.9% for Qwen2.5-VL-3B and 33.33% for baseline SigLIP since we only fed with the actual label here due to limited GPU resources. The model excels at distinguishing COVID-19 from normal lung presentations but fails entirely on tuberculosis detection due to severe class imbalance in the training data. Future work should focus more on addressing the data imbalance through data augmentation, synthetic sample generation, and acquisition of additional tuberculosis imaging data to achieve clinically viable multi-class respiratory disease classification.
 
+**Code Instructions**
+Here is the google colab link: https://drive.google.com/file/d/18YIOZ8H-Bm3UOGwvdvdkFrTKIiQaqmBk/view?usp=sharing
+You can open "cv_final.ipynb" notebook and follow the steps to see the results. 
 
 I talked to Professor, and we agreed to change the project plan. I left the explanations in my old github repo on the difficulties I encountered: https://github.com/nx3782/Wavelet-Enhanced-Facial-Emotional-VLM/blob/main/readme.md on the bottom. 
